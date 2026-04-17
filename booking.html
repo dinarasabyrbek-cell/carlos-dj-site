@@ -1,0 +1,857 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Book DJ Carlos — Mexico City</title>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --purple:   #8B5CF6;
+      --pink:     #EC4899;
+      --bg:       #0D0D0D;
+      --surface:  #111111;
+      --surface2: #181818;
+      --border:   rgba(139, 92, 246, 0.30);
+      --border-focus: rgba(236, 72, 153, 0.70);
+      --nav-h:    64px;
+      --radius:   12px;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: #fff;
+      font-family: 'Inter', sans-serif;
+      min-height: 100svh;
+      overflow-x: hidden;
+    }
+
+    /* ─── NAV ─── */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      height: var(--nav-h);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 clamp(1.5rem, 5vw, 4rem);
+      background: rgba(13, 13, 13, 0.82);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-bottom: 1px solid rgba(139, 92, 246, 0.18);
+      z-index: 100;
+      transition: box-shadow 0.3s;
+    }
+
+    .nav-logo {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.65rem;
+      letter-spacing: 0.08em;
+      text-decoration: none;
+      background: linear-gradient(90deg, var(--purple), var(--pink));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 2.5rem;
+      list-style: none;
+      align-items: center;
+    }
+
+    .nav-links a {
+      color: rgba(255,255,255,0.65);
+      text-decoration: none;
+      font-size: 0.85rem;
+      font-weight: 600;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      transition: color 0.25s;
+    }
+
+    .nav-links a:hover { color: #fff; }
+
+    .nav-links a.active {
+      background: linear-gradient(90deg, var(--purple), var(--pink));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .nav-cta {
+      background: linear-gradient(90deg, var(--purple), var(--pink)) !important;
+      -webkit-background-clip: unset !important;
+      -webkit-text-fill-color: #fff !important;
+      background-clip: unset !important;
+      color: #fff !important;
+      padding: 0.45rem 1.25rem;
+      border-radius: 999px;
+      transition: box-shadow 0.3s !important;
+    }
+
+    .nav-cta:hover {
+      box-shadow: 0 0 20px rgba(236, 72, 153, 0.65) !important;
+    }
+
+    /* hamburger */
+    .hamburger {
+      display: none;
+      flex-direction: column;
+      gap: 5px;
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 4px;
+    }
+
+    .hamburger span {
+      display: block;
+      width: 24px; height: 2px;
+      background: #fff;
+      border-radius: 2px;
+      transition: transform 0.3s, opacity 0.3s;
+    }
+
+    .hamburger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+    .hamburger.open span:nth-child(2) { opacity: 0; }
+    .hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+    .mobile-menu {
+      display: none;
+      position: fixed;
+      top: var(--nav-h); left: 0; right: 0;
+      background: rgba(13, 13, 13, 0.97);
+      padding: 2rem;
+      flex-direction: column;
+      gap: 1.5rem;
+      z-index: 99;
+      border-bottom: 1px solid rgba(139, 92, 246, 0.18);
+    }
+
+    .mobile-menu.open { display: flex; }
+
+    .mobile-menu a {
+      color: rgba(255,255,255,0.85);
+      text-decoration: none;
+      font-size: 1.2rem;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+
+    /* ─── LAYOUT ─── */
+    .page-wrap {
+      padding-top: calc(var(--nav-h) + 3.5rem);
+      padding-bottom: 6rem;
+      max-width: 680px;
+      margin: 0 auto;
+      padding-left:  clamp(1.25rem, 5vw, 2.5rem);
+      padding-right: clamp(1.25rem, 5vw, 2.5rem);
+    }
+
+    /* page header */
+    .page-header { margin-bottom: 3rem; }
+
+    .page-label {
+      font-size: 0.72rem;
+      letter-spacing: 0.24em;
+      text-transform: uppercase;
+      background: linear-gradient(90deg, var(--purple), var(--pink));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      font-weight: 700;
+      margin-bottom: 0.55rem;
+    }
+
+    .page-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(2.8rem, 8vw, 5rem);
+      letter-spacing: 0.04em;
+      line-height: 1;
+      margin-bottom: 0.9rem;
+    }
+
+    .page-sub {
+      font-size: 0.92rem;
+      color: rgba(255,255,255,0.48);
+      line-height: 1.65;
+      max-width: 480px;
+    }
+
+    /* ─── FORM CARD ─── */
+    .form-card {
+      background: var(--surface);
+      border-radius: 22px;
+      padding: clamp(1.75rem, 5vw, 2.8rem);
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* gradient border */
+    .form-card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: 22px;
+      padding: 1.5px;
+      background: linear-gradient(135deg, var(--purple), var(--pink));
+      -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+      -webkit-mask-composite: xor;
+      mask-composite: exclude;
+      pointer-events: none;
+      opacity: 0.50;
+    }
+
+    /* ambient top glow */
+    .form-card::after {
+      content: '';
+      position: absolute;
+      top: -50px; left: 50%;
+      transform: translateX(-50%);
+      width: 55%;
+      height: 100px;
+      background: radial-gradient(ellipse, rgba(139,92,246,0.18) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    /* ─── FIELD GROUPS ─── */
+    .fields { position: relative; z-index: 1; }
+
+    .row-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.25rem;
+    }
+
+    .field {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      margin-bottom: 1.35rem;
+    }
+
+    .field:last-child { margin-bottom: 0; }
+
+    /* label */
+    label {
+      font-size: 0.78rem;
+      font-weight: 600;
+      letter-spacing: 0.10em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.55);
+      display: flex;
+      align-items: center;
+      gap: 0.35rem;
+    }
+
+    .req {
+      color: var(--pink);
+      font-size: 0.85rem;
+      line-height: 1;
+    }
+
+    /* ─── INPUTS / SELECT / TEXTAREA ─── */
+    input, select, textarea {
+      width: 100%;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      color: #fff;
+      font-family: 'Inter', sans-serif;
+      font-size: 0.95rem;
+      font-weight: 400;
+      padding: 0.82rem 1rem;
+      outline: none;
+      transition:
+        border-color 0.22s,
+        box-shadow   0.22s,
+        background   0.22s;
+      appearance: none;
+      -webkit-appearance: none;
+    }
+
+    input::placeholder,
+    textarea::placeholder { color: rgba(255,255,255,0.22); }
+
+    /* focus */
+    input:focus, select:focus, textarea:focus {
+      border-color: var(--border-focus);
+      background: #1f1020;
+      box-shadow:
+        0 0 0 3px rgba(236, 72, 153, 0.12),
+        0 0 18px rgba(236, 72, 153, 0.10);
+    }
+
+    /* valid (has content) */
+    input:not(:placeholder-shown):valid,
+    select:valid,
+    textarea:not(:placeholder-shown) {
+      border-color: rgba(139, 92, 246, 0.50);
+    }
+
+    /* invalid after interaction */
+    input:not(:placeholder-shown):invalid,
+    select:user-invalid {
+      border-color: rgba(236, 72, 153, 0.55);
+      box-shadow: 0 0 0 3px rgba(236, 72, 153, 0.10);
+    }
+
+    /* date-picker icon tint */
+    input[type="date"]::-webkit-calendar-picker-indicator {
+      filter: invert(0.6) sepia(1) saturate(3) hue-rotate(240deg);
+      cursor: pointer;
+      opacity: 0.65;
+      transition: opacity 0.2s;
+    }
+
+    input[type="date"]::-webkit-calendar-picker-indicator:hover { opacity: 1; }
+
+    /* custom select arrow */
+    .select-wrap { position: relative; }
+
+    .select-wrap::after {
+      content: '';
+      position: absolute;
+      right: 14px; top: 50%;
+      transform: translateY(-50%);
+      width: 0; height: 0;
+      border-left: 5px solid transparent;
+      border-right: 5px solid transparent;
+      border-top: 6px solid rgba(139,92,246,0.65);
+      pointer-events: none;
+      transition: border-top-color 0.2s;
+    }
+
+    .select-wrap:focus-within::after {
+      border-top-color: var(--pink);
+    }
+
+    select { padding-right: 2.4rem; cursor: pointer; }
+
+    select option {
+      background: #1a1a1a;
+      color: #fff;
+    }
+
+    textarea { resize: vertical; min-height: 110px; line-height: 1.6; }
+
+    /* field error message */
+    .field-error {
+      font-size: 0.72rem;
+      color: var(--pink);
+      letter-spacing: 0.04em;
+      min-height: 1em;
+      opacity: 0;
+      transform: translateY(-4px);
+      transition: opacity 0.2s, transform 0.2s;
+    }
+
+    .field-error.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* ─── DIVIDER ─── */
+    .divider {
+      border: none;
+      border-top: 1px solid rgba(255,255,255,0.06);
+      margin: 1.8rem 0;
+    }
+
+    /* ─── SUBMIT BUTTON ─── */
+    .btn-submit {
+      width: 100%;
+      padding: 1.1rem 2rem;
+      background: linear-gradient(135deg, var(--purple), var(--pink));
+      color: #fff;
+      font-family: 'Inter', sans-serif;
+      font-size: 1rem;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      border: none;
+      border-radius: 999px;
+      cursor: pointer;
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.6rem;
+      transition: transform 0.22s, box-shadow 0.30s;
+      box-shadow: 0 4px 28px rgba(139, 92, 246, 0.38);
+      overflow: hidden;
+    }
+
+    .btn-submit::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(255,255,255,0.12), transparent);
+      opacity: 0;
+      transition: opacity 0.25s;
+    }
+
+    .btn-submit::after {
+      content: '';
+      position: absolute;
+      inset: -3px;
+      border-radius: 999px;
+      background: linear-gradient(135deg, var(--purple), var(--pink));
+      z-index: -1;
+      opacity: 0;
+      filter: blur(16px);
+      transition: opacity 0.35s;
+    }
+
+    .btn-submit:hover {
+      transform: translateY(-2px);
+      box-shadow:
+        0 8px 45px rgba(236, 72, 153, 0.65),
+        0 0 65px rgba(139, 92, 246, 0.40);
+    }
+
+    .btn-submit:hover::before  { opacity: 1; }
+    .btn-submit:hover::after   { opacity: 1; }
+    .btn-submit:active { transform: scale(0.98); }
+
+    .btn-submit:disabled {
+      opacity: 0.65;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    /* spinner inside button */
+    .spinner {
+      display: none;
+      width: 18px; height: 18px;
+      border: 2.5px solid rgba(255,255,255,0.35);
+      border-top-color: #fff;
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+    }
+
+    .btn-submit.loading .btn-label  { display: none; }
+    .btn-submit.loading .spinner    { display: block; }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* ─── CONFIRMATION ─── */
+    .confirmation {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      padding: 3rem 1.5rem;
+      gap: 1.5rem;
+    }
+
+    .confirmation.visible { display: flex; }
+
+    .confirm-icon {
+      width: 80px; height: 80px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--purple), var(--pink));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      animation: confirm-pulse 2.2s ease-in-out infinite;
+      box-shadow: 0 0 0 0 rgba(236,72,153,0.5);
+    }
+
+    @keyframes confirm-pulse {
+      0%   { box-shadow: 0 0 0  0   rgba(236,72,153,0.50); }
+      50%  { box-shadow: 0 0 0 22px rgba(236,72,153,0.00); }
+      100% { box-shadow: 0 0 0  0   rgba(236,72,153,0.00); }
+    }
+
+    .confirm-icon svg { color: #fff; }
+
+    .confirm-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(1.8rem, 5vw, 2.8rem);
+      letter-spacing: 0.04em;
+      line-height: 1.1;
+    }
+
+    .confirm-msg {
+      font-size: 1rem;
+      color: rgba(255,255,255,0.58);
+      line-height: 1.65;
+      max-width: 380px;
+    }
+
+    .confirm-msg strong {
+      background: linear-gradient(90deg, var(--purple), var(--pink));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      font-weight: 700;
+    }
+
+    .confirm-back {
+      display: inline-block;
+      margin-top: 0.5rem;
+      padding: 0.75rem 2rem;
+      background: none;
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      color: rgba(255,255,255,0.65);
+      font-family: 'Inter', sans-serif;
+      font-size: 0.85rem;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      cursor: pointer;
+      text-decoration: none;
+      transition: border-color 0.25s, color 0.25s, box-shadow 0.25s;
+    }
+
+    .confirm-back:hover {
+      border-color: rgba(236,72,153,0.55);
+      color: #fff;
+      box-shadow: 0 0 14px rgba(236,72,153,0.25);
+    }
+
+    /* ─── FOOTER ─── */
+    footer {
+      padding: 2.5rem clamp(1.5rem, 5vw, 4rem);
+      border-top: 1px solid rgba(255,255,255,0.06);
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+    }
+
+    .footer-logo {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.45rem;
+      letter-spacing: 0.08em;
+      text-decoration: none;
+      background: linear-gradient(90deg, var(--purple), var(--pink));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .footer-copy {
+      font-size: 0.76rem;
+      color: rgba(255,255,255,0.28);
+      letter-spacing: 0.05em;
+    }
+
+    /* ─── RESPONSIVE ─── */
+    @media (max-width: 560px) {
+      .nav-links { display: none; }
+      .hamburger { display: flex; }
+      .row-2 { grid-template-columns: 1fr; gap: 0; }
+      footer { flex-direction: column; align-items: flex-start; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav id="mainNav">
+    <a href="index.html" class="nav-logo">DJ Carlos</a>
+    <ul class="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="mixes.html">Mixes</a></li>
+      <li><a href="booking.html" class="active nav-cta">Book</a></li>
+    </ul>
+    <button class="hamburger" id="hamburger" aria-label="Toggle navigation">
+      <span></span><span></span><span></span>
+    </button>
+  </nav>
+
+  <!-- MOBILE MENU -->
+  <div class="mobile-menu" id="mobileMenu">
+    <a href="index.html"   onclick="closeMobile()">Home</a>
+    <a href="mixes.html"   onclick="closeMobile()">Mixes</a>
+    <a href="booking.html" onclick="closeMobile()">Book</a>
+  </div>
+
+  <!-- MAIN -->
+  <main class="page-wrap">
+
+    <div class="page-header">
+      <p class="page-label">Let's Make It Happen</p>
+      <h1 class="page-title">Book DJ Carlos</h1>
+      <p class="page-sub">Fill in the details below and Carlos will personally follow up within 24 hours to discuss your event.</p>
+    </div>
+
+    <div class="form-card" id="formCard">
+
+      <!-- ── BOOKING FORM ── -->
+      <form class="fields" id="bookingForm"
+            action="https://formspree.io/f/mdayekez"
+            method="POST"
+            novalidate>
+
+        <!-- hidden honeypot (spam filter) -->
+        <input type="text" name="_gotcha" style="display:none" tabindex="-1" autocomplete="off" />
+        <!-- redirect disabled — handled in JS -->
+        <input type="hidden" name="_next" value="" />
+
+        <div class="row-2">
+          <!-- Full Name -->
+          <div class="field">
+            <label for="fullName">Full Name <span class="req" aria-hidden="true">*</span></label>
+            <input
+              type="text"
+              id="fullName"
+              name="fullName"
+              placeholder="Maria González"
+              required
+              autocomplete="name"
+            />
+            <span class="field-error" id="err-fullName">Please enter your full name.</span>
+          </div>
+
+          <!-- Email -->
+          <div class="field">
+            <label for="email">Email <span class="req" aria-hidden="true">*</span></label>
+            <input
+              type="email"
+              id="email"
+              name="email"
+              placeholder="maria@example.com"
+              required
+              autocomplete="email"
+            />
+            <span class="field-error" id="err-email">Please enter a valid email address.</span>
+          </div>
+        </div>
+
+        <div class="row-2">
+          <!-- Event Date -->
+          <div class="field">
+            <label for="eventDate">Event Date <span class="req" aria-hidden="true">*</span></label>
+            <input
+              type="date"
+              id="eventDate"
+              name="eventDate"
+              required
+            />
+            <span class="field-error" id="err-eventDate">Please select an event date.</span>
+          </div>
+
+          <!-- Event Type -->
+          <div class="field">
+            <label for="eventType">Event Type <span class="req" aria-hidden="true">*</span></label>
+            <div class="select-wrap">
+              <select id="eventType" name="eventType" required>
+                <option value="" disabled selected>Select type…</option>
+                <option value="Wedding">Wedding</option>
+                <option value="Corporate Event">Corporate Event</option>
+                <option value="Club Night">Club Night</option>
+                <option value="Private Party">Private Party</option>
+                <option value="Other">Other</option>
+              </select>
+            </div>
+            <span class="field-error" id="err-eventType">Please select an event type.</span>
+          </div>
+        </div>
+
+        <!-- Venue Name -->
+        <div class="field">
+          <label for="venueName">Venue Name</label>
+          <input
+            type="text"
+            id="venueName"
+            name="venueName"
+            placeholder="Club Xanadu, Hotel Marquis…"
+            autocomplete="off"
+          />
+        </div>
+
+        <!-- Budget Range -->
+        <div class="field">
+          <label for="budget">Budget Range <span class="req" aria-hidden="true">*</span></label>
+          <div class="select-wrap">
+            <select id="budget" name="budget" required>
+              <option value="" disabled selected>Select budget…</option>
+              <option value="Under $500">Under $500</option>
+              <option value="$500–$1,000">$500–$1,000</option>
+              <option value="$1,000–$2,500">$1,000–$2,500</option>
+              <option value="$2,500+">$2,500+</option>
+              <option value="Let's Discuss">Let's Discuss</option>
+            </select>
+          </div>
+          <span class="field-error" id="err-budget">Please select a budget range.</span>
+        </div>
+
+        <!-- Additional Details -->
+        <div class="field">
+          <label for="details">Additional Details</label>
+          <textarea
+            id="details"
+            name="details"
+            rows="4"
+            placeholder="Tell Carlos about the vibe, expected guest count, music preferences, special requests…"
+          ></textarea>
+        </div>
+
+        <hr class="divider" />
+
+        <button type="submit" class="btn-submit" id="submitBtn">
+          <span class="btn-label">Send Booking Request</span>
+          <div class="spinner" aria-hidden="true"></div>
+        </button>
+
+      </form>
+
+      <!-- ── CONFIRMATION ── -->
+      <div class="confirmation" id="confirmation" role="status" aria-live="polite">
+        <div class="confirm-icon" aria-hidden="true">
+          <svg width="36" height="36" viewBox="0 0 24 24" fill="none"
+               stroke="currentColor" stroke-width="2.5"
+               stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="20 6 9 17 4 12"/>
+          </svg>
+        </div>
+        <h2 class="confirm-title">You're All Set!</h2>
+        <p class="confirm-msg">
+          Thanks for reaching out!
+          <strong>Carlos will get back to you within 24&nbsp;hours.</strong>
+          Keep an eye on your inbox — something special is coming.
+        </p>
+        <a href="index.html" class="confirm-back">Back to Home</a>
+      </div>
+
+    </div><!-- /form-card -->
+
+  </main>
+
+  <footer>
+    <a href="index.html" class="footer-logo">DJ Carlos</a>
+    <div class="footer-copy">&copy; 2026 DJ Carlos &mdash; Mexico City.</div>
+  </footer>
+
+  <script>
+    /* ── nav ── */
+    const hamburger  = document.getElementById('hamburger');
+    const mobileMenu = document.getElementById('mobileMenu');
+    const mainNav    = document.getElementById('mainNav');
+
+    hamburger.addEventListener('click', () => {
+      hamburger.classList.toggle('open');
+      mobileMenu.classList.toggle('open');
+    });
+
+    function closeMobile() {
+      hamburger.classList.remove('open');
+      mobileMenu.classList.remove('open');
+    }
+
+    window.addEventListener('scroll', () => {
+      mainNav.style.boxShadow = window.scrollY > 8
+        ? '0 4px 32px rgba(0,0,0,0.65)'
+        : 'none';
+    }, { passive: true });
+
+    /* ── set date min to today ── */
+    const dateInput = document.getElementById('eventDate');
+    dateInput.min = new Date().toISOString().split('T')[0];
+
+    /* ── field validation helpers ── */
+    const validations = {
+      fullName:  { el: document.getElementById('fullName'),  errId: 'err-fullName',  check: v => v.trim().length >= 2 },
+      email:     { el: document.getElementById('email'),     errId: 'err-email',     check: v => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v.trim()) },
+      eventDate: { el: document.getElementById('eventDate'), errId: 'err-eventDate', check: v => v !== '' },
+      eventType: { el: document.getElementById('eventType'), errId: 'err-eventType', check: v => v !== '' },
+      budget:    { el: document.getElementById('budget'),    errId: 'err-budget',    check: v => v !== '' },
+    };
+
+    function showError(key, show) {
+      const errEl = document.getElementById(validations[key].errId);
+      if (!errEl) return;
+      errEl.classList.toggle('visible', show);
+    }
+
+    function validateField(key) {
+      const { el, check } = validations[key];
+      const valid = check(el.value);
+      showError(key, !valid);
+      return valid;
+    }
+
+    // live validation on blur
+    Object.keys(validations).forEach(key => {
+      validations[key].el.addEventListener('blur', () => validateField(key));
+      validations[key].el.addEventListener('input', () => {
+        const errEl = document.getElementById(validations[key].errId);
+        if (errEl && errEl.classList.contains('visible')) validateField(key);
+      });
+    });
+
+    /* ── form submission ── */
+    const form       = document.getElementById('bookingForm');
+    const submitBtn  = document.getElementById('submitBtn');
+    const confirm    = document.getElementById('confirmation');
+
+    form.addEventListener('submit', async e => {
+      e.preventDefault();
+
+      // validate all required fields
+      let allValid = true;
+      Object.keys(validations).forEach(key => {
+        if (!validateField(key)) allValid = false;
+      });
+
+      if (!allValid) {
+        // scroll to first error
+        const firstErr = form.querySelector('.field-error.visible');
+        if (firstErr) firstErr.closest('.field').querySelector('input, select, textarea').focus();
+        return;
+      }
+
+      // loading state
+      submitBtn.classList.add('loading');
+      submitBtn.disabled = true;
+
+      try {
+        const data = new FormData(form);
+        const res  = await fetch(form.action, {
+          method:  'POST',
+          body:    data,
+          headers: { Accept: 'application/json' },
+        });
+
+        if (res.ok) {
+          showConfirmation();
+        } else {
+          // try to read Formspree error
+          const json = await res.json().catch(() => ({}));
+          const msg  = (json.errors || []).map(e => e.message).join(', ')
+                       || 'Something went wrong. Please try again.';
+          alert(msg);
+          resetSubmitBtn();
+        }
+      } catch {
+        alert('Network error — please check your connection and try again.');
+        resetSubmitBtn();
+      }
+    });
+
+    function showConfirmation() {
+      form.style.display = 'none';
+      confirm.classList.add('visible');
+      confirm.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+
+    function resetSubmitBtn() {
+      submitBtn.classList.remove('loading');
+      submitBtn.disabled = false;
+    }
+  </script>
+
+</body>
+</html>
